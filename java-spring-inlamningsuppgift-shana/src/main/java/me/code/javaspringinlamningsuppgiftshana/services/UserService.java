@@ -43,8 +43,11 @@ public class UserService implements UserDetailsService {
 
     public User register(String username, String password)
             throws UserAlreadyExistsException
-
     {
+        var existing = userRepository.findByUsername(username);
+        if (existing.isPresent()){
+            throw new UserAlreadyExistsException();
+        }
         var user = new User(
             UUID.randomUUID().toString(),
             username,

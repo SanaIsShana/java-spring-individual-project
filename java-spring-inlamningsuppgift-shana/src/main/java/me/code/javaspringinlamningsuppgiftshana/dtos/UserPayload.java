@@ -1,8 +1,9 @@
-package me.code.javaspringinlamningsuppgiftshana.data;
+package me.code.javaspringinlamningsuppgiftshana.dtos;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import me.code.javaspringinlamningsuppgiftshana.data.User;
 
 @Getter
 @Setter

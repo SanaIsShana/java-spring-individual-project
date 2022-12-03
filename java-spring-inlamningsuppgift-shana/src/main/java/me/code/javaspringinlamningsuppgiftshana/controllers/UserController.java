@@ -3,12 +3,10 @@ package me.code.javaspringinlamningsuppgiftshana.controllers;
 import lombok.Getter;
 import lombok.Setter;
 import me.code.javaspringinlamningsuppgiftshana.data.User;
-import me.code.javaspringinlamningsuppgiftshana.data.UserPayload;
-import me.code.javaspringinlamningsuppgiftshana.dtos.UserDTO;
+import me.code.javaspringinlamningsuppgiftshana.dtos.UserPayload;
 import me.code.javaspringinlamningsuppgiftshana.exceptions.UserAlreadyExistsException;
 import me.code.javaspringinlamningsuppgiftshana.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
