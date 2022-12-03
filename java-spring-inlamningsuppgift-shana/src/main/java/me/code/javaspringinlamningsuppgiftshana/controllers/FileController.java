@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,10 +39,10 @@ public class FileController {
     @PostMapping("/upload")
     public FileDTO uploadFile(
             @RequestParam("file") MultipartFile file,
-            @RequestHeader String userId)
+            Authentication authentication)
             throws IOException, FileAlreadyExistsException
     {
-        var user = userService.getById(userId).get();
+        var user = userService.getByUsername(authentication.getName()).get();
         var fileDB = fileService.uploadFile(file, user);
 
         return new FileDTO(
@@ -52,8 +53,8 @@ public class FileController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<byte[]> getFile(@PathVariable int id) throws FileNotFoundException {
-        Optional<File> fileOptional = fileService.getFileById(id);
+    public ResponseEntity<byte[]> getFile(@PathVariable int id, Authentication authentication) throws FileNotFoundException {
+        Optional<File> fileOptional = fileService.getFileById(id, authentication);
 
         if (fileOptional.isEmpty()) {
             return ResponseEntity.notFound()
@@ -67,11 +68,11 @@ public class FileController {
                 .body(file.getData());
     }
 
-    @GetMapping("/{username}/all-files")
+    @GetMapping("/all-files")
     public List<FileDTO> getAllFiles(
-            @PathVariable String username
+            Authentication authentication
     ){
-            return fileService.getAllFiles(username)
+            return fileService.getAllFiles(authentication)
                     .stream()
                     .map(file -> {
                         return new FileDTO(
@@ -83,9 +84,9 @@ public class FileController {
     }
 
     @DeleteMapping("/{id}")
-    public FileDTO deleteFile(@PathVariable int id)
+    public FileDTO deleteFile(@PathVariable int id, Authentication authentication)
     throws FileNotFoundException{
-        return fileService.deleteFile(id);
+        return fileService.deleteFile(id, authentication);
     }
 
 }

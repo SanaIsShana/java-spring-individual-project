@@ -7,6 +7,7 @@ import me.code.javaspringinlamningsuppgiftshana.exceptions.FileAlreadyExistsExce
 import me.code.javaspringinlamningsuppgiftshana.exceptions.FileNotFoundException;
 import me.code.javaspringinlamningsuppgiftshana.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,39 +45,46 @@ public class FileService {
         return fileRepository.save(fileDB);
     }
 
-    public Optional<File> getFileById(int id) throws FileNotFoundException{
+    public Optional<File> getFileById(int id, Authentication authentication) throws FileNotFoundException{
         Optional<File> fileOptional = fileRepository.findById(id);
 
         if (fileOptional.isEmpty()){
             throw new FileNotFoundException();
         }
+
+        var username = fileOptional.get().getUser().getUsername();
+        if (!Objects.equals(username, authentication.getName())){
+            throw new FileNotFoundException();
+        }
         return fileOptional;
     }
 
-    public List<File> getAllFiles(String username){
-
+    public List<File> getAllFiles(Authentication authentication){
 
         return fileRepository.findAll()
                 .stream()
-                .filter(file -> Objects.equals(file.getUser().getUsername(), username))
+                .filter(file -> Objects.equals(file.getUser().getUsername(), authentication.getName()))
                 .collect(Collectors.toList());
     }
 
-    public FileDTO deleteFile(int id) throws FileNotFoundException{
+    public FileDTO deleteFile(int id, Authentication authentication) throws FileNotFoundException{
         Optional<File> fileOptional = fileRepository.findById(id);
 
         if (fileOptional.isEmpty()){
             throw new FileNotFoundException();
         }
         var file = fileOptional.get();
-        fileRepository.delete(file);
 
+        if (!Objects.equals(authentication.getName(), file.getUser().getUsername())){
+            throw new FileNotFoundException();
+        }
+
+        fileRepository.delete(file);
         var dto = new FileDTO(
                 file.getFileId(),
                 file.getName(),
                 file.getUser().getUsername()
         );
-
         return dto;
     }
 }

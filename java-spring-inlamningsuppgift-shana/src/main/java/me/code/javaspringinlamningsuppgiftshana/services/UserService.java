@@ -21,8 +21,8 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Optional<User> getById(String id){
-        return userRepository.findById(id);
+    public Optional<User> getByUsername(String username){
+        return userRepository.findByUsername(username);
     }
 
     @Autowired
