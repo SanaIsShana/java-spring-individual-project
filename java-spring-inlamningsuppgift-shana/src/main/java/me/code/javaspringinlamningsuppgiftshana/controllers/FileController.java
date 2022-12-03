@@ -10,12 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -64,16 +67,19 @@ public class FileController {
                 .body(file.getData());
     }
 
-    @GetMapping("/all-files")
-    public List<FileDTO> getAllFiles(){
-        return fileService.getAllFiles()
-                .stream()
-                .map(file -> {
-                    return new FileDTO(
-                            file.getFileId(),
-                            file.getName(),
-                            file.getUser().getUsername());
-                }).collect(Collectors.toList());
+    @GetMapping("/{username}/all-files")
+    public List<FileDTO> getAllFiles(
+            @PathVariable String username
+    ){
+            return fileService.getAllFiles(username)
+                    .stream()
+                    .map(file -> {
+                        return new FileDTO(
+                                file.getFileId(),
+                                file.getName(),
+                                file.getUser().getUsername());
+                    }).collect(Collectors.toList());
+
     }
 
     @DeleteMapping("/{id}")

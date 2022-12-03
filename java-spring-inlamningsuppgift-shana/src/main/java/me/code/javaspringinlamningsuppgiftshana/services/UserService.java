@@ -2,7 +2,6 @@ package me.code.javaspringinlamningsuppgiftshana.services;
 
 import lombok.extern.slf4j.Slf4j;
 import me.code.javaspringinlamningsuppgiftshana.data.User;
-import me.code.javaspringinlamningsuppgiftshana.dtos.UserDTO;
 import me.code.javaspringinlamningsuppgiftshana.exceptions.UserAlreadyExistsException;
 import me.code.javaspringinlamningsuppgiftshana.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +51,7 @@ public class UserService implements UserDetailsService {
             UUID.randomUUID().toString(),
             username,
             passwordEncoder.encode(password)
+
     );
         log.info("Successfully registered user with id '" + user.getId() + "'.");
         return userRepository.save(user);

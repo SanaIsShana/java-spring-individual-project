@@ -3,7 +3,7 @@ package me.code.javaspringinlamningsuppgiftshana.controllers;
 import lombok.Getter;
 import lombok.Setter;
 import me.code.javaspringinlamningsuppgiftshana.data.User;
-import me.code.javaspringinlamningsuppgiftshana.dtos.UserPayload;
+import me.code.javaspringinlamningsuppgiftshana.dtos.UserDTO;
 import me.code.javaspringinlamningsuppgiftshana.exceptions.UserAlreadyExistsException;
 import me.code.javaspringinlamningsuppgiftshana.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public UserPayload registerUser(
+    public UserDTO registerUser(
             @RequestBody
             UserInput userInput
     ) throws UserAlreadyExistsException {
         var user = userService.register(userInput.getUsername(), userInput.getPassword());
-        return UserPayload.fromUser(user);
+        return UserDTO.fromUser(user);
     }
 
     @Getter
@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public UserPayload info(@AuthenticationPrincipal User user){
-        return UserPayload.fromUser(user);
+    public UserDTO info(@AuthenticationPrincipal User user){
+        return UserDTO.fromUser(user);
     }
 
 }

@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FileService {
@@ -25,11 +26,16 @@ public class FileService {
     }
 
     public File uploadFile(MultipartFile file, User user) throws FileAlreadyExistsException, IOException {
+
         String fileName = file.getOriginalFilename();
         var existing = fileRepository.findByName(fileName);
+
         if (existing.isPresent()){
-            throw new FileAlreadyExistsException();
+            var fileOwner = existing.get().getUser().getUsername();
+            if (Objects.equals(fileOwner, user.getUsername())){
+            throw new FileAlreadyExistsException();}
         }
+
         File fileDB = new File(
                 fileName,
                 file.getContentType(),
@@ -47,8 +53,13 @@ public class FileService {
         return fileOptional;
     }
 
-    public List<File> getAllFiles(){
-        return fileRepository.findAll();
+    public List<File> getAllFiles(String username){
+
+
+        return fileRepository.findAll()
+                .stream()
+                .filter(file -> Objects.equals(file.getUser().getUsername(), username))
+                .collect(Collectors.toList());
     }
 
     public FileDTO deleteFile(int id) throws FileNotFoundException{

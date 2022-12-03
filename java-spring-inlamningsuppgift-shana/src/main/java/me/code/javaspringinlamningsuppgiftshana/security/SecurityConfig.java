@@ -1,13 +1,11 @@
 package me.code.javaspringinlamningsuppgiftshana.security;
 
-
-import me.code.javaspringinlamningsuppgiftshana.security.JWTLoginFilter;
-import me.code.javaspringinlamningsuppgiftshana.security.JWTVerifyFilter;
 import me.code.javaspringinlamningsuppgiftshana.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -40,7 +39,7 @@ public class SecurityConfig {
                 .permitAll()
                 .antMatchers(HttpMethod.PUT, "/file/")
                 .authenticated()
-                .antMatchers(HttpMethod.GET, "/file/")
+                .antMatchers(HttpMethod.GET, "/file/{userId}/**")
                 .authenticated()
                 .antMatchers(HttpMethod.DELETE, "/file/")
                 .authenticated()
