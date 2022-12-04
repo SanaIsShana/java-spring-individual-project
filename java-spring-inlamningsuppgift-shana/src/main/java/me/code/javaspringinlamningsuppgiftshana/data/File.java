@@ -8,10 +8,9 @@ import lombok.Setter;
 import javax.persistence.*;
 
 /**
- * File class connects to the database
- * it includes all columns we need for the file object
+ * File class connects to the database,
+ * it includes all columns (variables) we need for the file object.
  */
-
 @Getter
 @Setter
 @Entity(name = "files")
@@ -37,8 +36,6 @@ public class File {
         this.size = size;
         this.data = data;
         this.user = user;
-
-
     }
 
 }

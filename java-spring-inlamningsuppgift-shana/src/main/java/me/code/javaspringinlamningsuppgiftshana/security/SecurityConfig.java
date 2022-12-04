@@ -12,6 +12,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * SecurityConfig class has all the security configurations and
+ * here we can customize and manage the authentication of the endpoints.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {

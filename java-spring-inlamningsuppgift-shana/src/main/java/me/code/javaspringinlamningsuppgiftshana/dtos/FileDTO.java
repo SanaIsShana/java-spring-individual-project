@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-/** This class used for sending response to the user,
- * including get request for all-files, upload for new file ...
- *
+/** This class is used for sending response to the user
+ *  including get request for all-files, upload for new file ...,
+ *  instead of sending File object,
+ *  we could use FileDTO to protect the information of the object.
  */
 @Getter
 @Setter

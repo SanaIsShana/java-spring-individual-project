@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * FileController class includes all request handling methods for files
+ */
 @RestController
 @RequestMapping("/files")
 public class FileController {
@@ -32,6 +35,9 @@ public class FileController {
         this.userService = userService;
     }
 
+    /* Upload a file if the file doesn't exist in the database
+     * and returns FileDTO as response which has fileId, name, size, content-type and username.
+     */
     @PostMapping("/upload")
     public ResponseEntity<FileDTO> uploadFile(
             @RequestParam("file") MultipartFile file,
@@ -51,6 +57,9 @@ public class FileController {
         return ResponseEntity.ok(dto);
     }
 
+    /* Endpoint to download a file, it also checks if the file owner (user) is same as the
+     * authenticated user, if not throws a FileNotFoundException.
+     */
     @GetMapping("{id}")
     public ResponseEntity<byte[]> getFile(@PathVariable int id, Authentication authentication) throws FileNotFoundException {
         Optional<File> fileOptional = fileService.getFileById(id, authentication);
@@ -68,6 +77,9 @@ public class FileController {
                 .body(file.getData());
     }
 
+    /* Request method to get all files,
+     * it only gets the files that are owned by the authenticated user.
+     */
     @GetMapping("/all-files")
     public ResponseEntity<List<FileDTO>>getAllFiles(
             Authentication authentication
@@ -83,6 +95,10 @@ public class FileController {
                             file.getUser().getUsername())).collect(Collectors.toList()));
 
     }
+
+    /* Request method to delete a file based on the id,
+    * if a file is not found throws a FileNotFoundException,
+    * also only the owner has access to delete the file */
 
     @DeleteMapping("/{id}")
     public FileDTO deleteFile(@PathVariable int id, Authentication authentication)

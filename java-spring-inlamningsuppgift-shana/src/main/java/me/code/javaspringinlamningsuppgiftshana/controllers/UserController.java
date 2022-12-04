@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * UserController class includes all request handling methods
+ */
 @RestController
 public class UserController {
 
@@ -21,6 +24,10 @@ public class UserController {
         this.userService = userService;
     }
 
+    /* Endpoint for register a new user,
+     * if user already exists it throws an UserAlreadyExistsException
+     * it also return a UserDTO object.
+     */
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(
             @RequestBody
@@ -36,6 +43,10 @@ public class UserController {
         private String username;
         private String password;
     }
+
+    /* Endpoint for user detail,
+     * sends a UserDTO (includes username and userId) as response.
+     */
 
     @GetMapping("/info")
     public ResponseEntity<UserDTO> info(@AuthenticationPrincipal User user){

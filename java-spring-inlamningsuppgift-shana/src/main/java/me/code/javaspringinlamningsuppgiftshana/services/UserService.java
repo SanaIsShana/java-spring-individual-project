@@ -13,6 +13,13 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * UserService implements UserDetailService,
+ * this class includes the business functionalities for user object,
+ * and it has two methods.
+ * Method loadUserByUsername is overridden in this class which locates the user based on the username.
+ * The other method does the registration of a new user.
+ */
 @Service
 public class UserService implements UserDetailsService {
 
@@ -38,6 +45,10 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    /* When user register a new user account
+     * the service will wrap it to UserDetail object
+     * and the password will be hashed.
+     */
     public User register(String username, String password)
             throws UserAlreadyExistsException
     {

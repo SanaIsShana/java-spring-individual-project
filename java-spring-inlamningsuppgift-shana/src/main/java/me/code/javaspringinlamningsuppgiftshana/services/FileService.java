@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,6 +17,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * FileService includes the business functionalities for file object,
+ * and we use FileService to upload, get, download and delete the files.
+ */
 @Service
 public class FileService {
     private final FileRepository fileRepository;
@@ -32,6 +35,10 @@ public class FileService {
         String fileName = file.getOriginalFilename();
         var existing = fileRepository.findByName(fileName);
 
+        /* Check if both the file is stored in the same user's account,
+         *  throws an exception if the user already has the file.
+         */
+
         if (existing.isPresent()){
             var fileOwner = existing.get().getUser().getUsername();
             if (Objects.equals(fileOwner, user.getUsername())){
@@ -45,7 +52,6 @@ public class FileService {
                 file.getBytes(),
                 user);
 
-
         return fileRepository.save(fileDB);
     }
 
@@ -56,6 +62,9 @@ public class FileService {
             throw new FileNotFoundException();
         }
 
+        /* Check if the authenticated user's name is same as the file's owner,
+         * so that the user only have access to his/her files.
+         */
         var username = fileOptional.get().getUser().getUsername();
         if (!Objects.equals(username, authentication.getName())){
             throw new FileNotFoundException();
@@ -65,6 +74,7 @@ public class FileService {
 
     public List<File> getAllFiles(Authentication authentication){
 
+        /* Also uses authentication user to restrict the files. */
         return fileRepository.findAll()
                 .stream()
                 .filter(file -> Objects.equals(file.getUser().getUsername(), authentication.getName()))
@@ -74,6 +84,10 @@ public class FileService {
     public FileDTO deleteFile(int id, Authentication authentication) throws FileNotFoundException{
         Optional<File> fileOptional = fileRepository.findById(id);
 
+        /*
+         * Here also used authentication user to restrict to delete the file
+         * that belong the user.
+         */
         if (fileOptional.isEmpty()){
             throw new FileNotFoundException();
         }
@@ -85,6 +99,7 @@ public class FileService {
 
         fileRepository.delete(file);
 
+        /* Returns a FileDTO object when the file is deleted. */
         return new FileDTO(
                 file.getFileId(),
                 file.getName(),

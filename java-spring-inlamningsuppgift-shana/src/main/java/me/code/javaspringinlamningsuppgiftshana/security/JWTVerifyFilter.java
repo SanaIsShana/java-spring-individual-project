@@ -15,6 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * This class extends OncePerRequestFilter,
+ * it runs and authenticates the token each time when there is a request
+ * to secure the program.
+ */
 public class JWTVerifyFilter extends OncePerRequestFilter {
 
     private final UserService userService;
