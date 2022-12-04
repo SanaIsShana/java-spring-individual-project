@@ -33,16 +33,21 @@ public class FileService {
     public File uploadFile(MultipartFile file, User user) throws FileAlreadyExistsException, IOException {
 
         String fileName = file.getOriginalFilename();
-        var existing = fileRepository.findByName(fileName);
+        var existing = fileRepository.findAllByName(fileName);
 
         /* Check if both the file is stored in the same user's account,
          *  throws an exception if the user already has the file.
          */
 
         if (existing.isPresent()){
-            var fileOwner = existing.get().getUser().getUsername();
-            if (Objects.equals(fileOwner, user.getUsername())){
-            throw new FileAlreadyExistsException();}
+            var fileList = existing.get();
+            if (fileList.size() > 1) {
+               var fileWithSameUser = fileList.stream()
+                       .filter(f -> Objects.equals(f.getUser().getUsername(), user.getUsername())).toList();
+                if (!fileWithSameUser.isEmpty()){
+                    throw new FileAlreadyExistsException();
+                }
+            }
         }
 
         File fileDB = new File(
