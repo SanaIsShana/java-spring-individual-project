@@ -7,6 +7,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/**
+ * File class connects to the database
+ * it includes all columns we need for the file object
+ */
 
 @Getter
 @Setter

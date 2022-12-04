@@ -16,12 +16,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/** JWTLoginFilter implements UsernamePasswordAuthenticationFilter which
+ * processes form submission of an authentication
+ */
 
 @RequiredArgsConstructor
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
+    /*Injects AuthenticationManager*/
     private final AuthenticationManager authenticationManager;
 
+
+    /* Customize attemptAuthentication method
+    * it returns a populated authentication token for user
+    * when the authentication is successful,
+    * it returns null if is not successful
+    */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException
@@ -34,6 +44,10 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         return authenticationManager.authenticate(authentication);
     }
 
+    /** when the autentication is successful is comes to this method,
+     *
+     *
+     */
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,

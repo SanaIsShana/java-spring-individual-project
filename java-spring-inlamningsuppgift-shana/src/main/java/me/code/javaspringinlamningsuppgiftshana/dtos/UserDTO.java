@@ -5,6 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import me.code.javaspringinlamningsuppgiftshana.data.User;
 
+
+/** This class is used for sending user info for the security reason
+ * To protect the user's info, there will be no password in response
+ */
 @Getter
 @Setter
 @RequiredArgsConstructor

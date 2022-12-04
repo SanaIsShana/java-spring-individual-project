@@ -6,6 +6,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * FileRepository is used for managing the data
+ * there is a custom method to find file with filename.
+ */
 @Repository
 public interface FileRepository extends JpaRepository<File, Integer> {
 

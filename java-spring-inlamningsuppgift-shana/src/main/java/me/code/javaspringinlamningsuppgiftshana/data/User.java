@@ -11,6 +11,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Collection;
 
+/**
+ * User object connects to the database,
+ * it also implements UserDetails which provides the important user information
+ */
 @Getter
 @Setter
 @Entity(name = "file_users")

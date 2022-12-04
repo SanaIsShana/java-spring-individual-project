@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/** This class used for sending response to the user,
+ * including get request for all-files, upload for new file ...
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor
