@@ -10,21 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/files")
 public class FileController {
 
     private final FileService fileService;
@@ -37,7 +33,7 @@ public class FileController {
     }
 
     @PostMapping("/upload")
-    public FileDTO uploadFile(
+    public ResponseEntity<FileDTO> uploadFile(
             @RequestParam("file") MultipartFile file,
             Authentication authentication)
             throws IOException, FileAlreadyExistsException
@@ -45,11 +41,14 @@ public class FileController {
         var user = userService.getByUsername(authentication.getName()).get();
         var fileDB = fileService.uploadFile(file, user);
 
-        return new FileDTO(
+        var dto = new FileDTO(
                 fileDB.getFileId(),
                 fileDB.getName(),
-                user.getUsername()
-        );
+                fileDB.getType(),
+                fileDB.getSize(),
+                user.getUsername());
+
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("{id}")
@@ -62,6 +61,7 @@ public class FileController {
         }
 
         File file = fileOptional.get();
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
                 .contentType(MediaType.valueOf(file.getType()))
@@ -69,17 +69,18 @@ public class FileController {
     }
 
     @GetMapping("/all-files")
-    public List<FileDTO> getAllFiles(
+    public ResponseEntity<List<FileDTO>>getAllFiles(
             Authentication authentication
     ){
-            return fileService.getAllFiles(authentication)
+
+        return ResponseEntity.ok(fileService.getAllFiles(authentication)
                     .stream()
-                    .map(file -> {
-                        return new FileDTO(
-                                file.getFileId(),
-                                file.getName(),
-                                file.getUser().getUsername());
-                    }).collect(Collectors.toList());
+                    .map(file -> new FileDTO(
+                            file.getFileId(),
+                            file.getName(),
+                            file.getType(),
+                            file.getSize(),
+                            file.getUser().getUsername())).collect(Collectors.toList()));
 
     }
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,8 +41,11 @@ public class FileService {
         File fileDB = new File(
                 fileName,
                 file.getContentType(),
+                file.getSize(),
                 file.getBytes(),
                 user);
+
+
         return fileRepository.save(fileDB);
     }
 
@@ -80,11 +84,13 @@ public class FileService {
         }
 
         fileRepository.delete(file);
-        var dto = new FileDTO(
+
+        return new FileDTO(
                 file.getFileId(),
                 file.getName(),
+                file.getType(),
+                file.getSize(),
                 file.getUser().getUsername()
         );
-        return dto;
     }
 }

@@ -1,6 +1,5 @@
 package me.code.javaspringinlamningsuppgiftshana.services;
 
-import lombok.extern.slf4j.Slf4j;
 import me.code.javaspringinlamningsuppgiftshana.data.User;
 import me.code.javaspringinlamningsuppgiftshana.exceptions.UserAlreadyExistsException;
 import me.code.javaspringinlamningsuppgiftshana.repositories.UserRepository;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Slf4j
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -44,16 +42,17 @@ public class UserService implements UserDetailsService {
             throws UserAlreadyExistsException
     {
         var existing = userRepository.findByUsername(username);
+
         if (existing.isPresent()){
             throw new UserAlreadyExistsException();
         }
+
         var user = new User(
             UUID.randomUUID().toString(),
             username,
             passwordEncoder.encode(password)
 
     );
-        log.info("Successfully registered user with id '" + user.getId() + "'.");
         return userRepository.save(user);
 
     }
